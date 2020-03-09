@@ -56,12 +56,12 @@ jobs:
     - run:
         name: Docker Build and Push - CircleCI-AWS
         command: |
-          if git diff --name-only HEAD^...HEAD | grep "circleci-aws/"; then
+          if git diff --name-only HEAD^...HEAD; then
             aws ecr get-login --no-include-email --region us-east-1 > a.sh
             chmod 777 a.sh
             ./a.sh
-            docker build -t circleci-aws .
-            docker tag circleci-aws:latest 275071210651.dkr.ecr.us-east-1.amazonaws.com/circleci-aws:$CIRCLE_BUILD_NUM
+            docker build -t circleci-aws-tag .
+            docker tag circleci-aws-tag:latest 275071210651.dkr.ecr.us-east-1.amazonaws.com/circleci-aws:$CIRCLE_BUILD_NUM
             docker push 275071210651.dkr.ecr.us-east-1.amazonaws.com/circleci-aws:$CIRCLE_BUILD_NUM
           else
             echo "No changes detected"
