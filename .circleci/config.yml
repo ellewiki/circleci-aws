@@ -1,5 +1,69 @@
+# JavaScript CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
 #
 general:
   branches:
     only:
     - master
+    - develop
+    - qa
+version: 2
+jobs:
+  build:
+    working_directory: ~/mern-starter
+    docker:
+    - image: circleci/node:8.10
+    # - image: circleci/mongo:4.0.9
+    # - image: circleci/python:3.7.2
+    - image: docker:18.06.0-ce
+    steps:
+    - checkout
+    - setup_remote_docker:
+        version: 18.06.0-ce
+    - run:
+        name: Install pip
+        command: sudo apt-get install python3-pip
+    - run:
+        name: Install awscli
+        command: sudo pip3 install awscli
+    - run:
+        name: update-npm
+        command: 'sudo npm install -g npm@5'
+#    - restore_cache:
+#        key: dependency-cache-{{ checksum "./ph-c360-batch-mongo2s3/package.json" }}
+#    - run:
+#        name: install-npm-crmId
+#        command: chmod 755 ph-c360-batch-mongo2s3.sh && sh ph-c360-batch-mongo2s3.sh
+#    - run:
+#        name: install-npm-customerprofile
+#        command:  chmod 755 ph-c360-batch-mongo2s3.sh && sh ph-c360-batch-s32mongo.sh
+#    - save_cache:
+#        key: dependency-cache-{{ checksum "./ph-c360-batch-mongo2s3/package.json" }}
+#        paths:
+#        - ./ph-c360-batch-mongo2s3/node_modules
+#        - ./ph-c360-batch-s32mongo/node_modules
+#        - ./ph-batch-nfl-feed2s3/node_modules
+#        - ./ph-batch-nfl-s32braze/node_modules
+    - store_artifacts:
+        path: test-results.xml
+        prefix: tests
+    - store_artifacts:
+        path: coverage
+        prefix: coverage
+    - store_test_results:
+        path: test-results.xml
+    - run:
+        name: Docker Build and Push - CircleCI-AWS
+        command: |
+          if git diff --name-only HEAD^...HEAD | grep "circleci-aws/"; then
+            aws ecr get-login --no-include-email --region us-east-1 > a.sh
+            chmod 777 a.sh
+            ./a.sh
+            docker build -t circleci-aws .
+            docker tag circleci-aws:latest 275071210651.dkr.ecr.us-east-1.amazonaws.com/circleci-aws:$CIRCLE_BUILD_NUM
+            docker push 275071210651.dkr.ecr.us-east-1.amazonaws.com/circleci-aws:$CIRCLE_BUILD_NUM
+          else
+            echo "No changes detected"
+            exit 0
+          fi
