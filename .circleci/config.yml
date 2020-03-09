@@ -57,6 +57,7 @@ jobs:
         name: Docker Build and Push - CircleCI-AWS
         command: |
           if git diff --name-only HEAD^...HEAD; then
+            echo "Changes detected"
             aws ecr get-login --no-include-email --region us-east-1 > a.sh
             chmod 777 a.sh
             ./a.sh

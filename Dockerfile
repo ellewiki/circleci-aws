@@ -1,11 +1,11 @@
 FROM amazonlinux:latest
 
 ##############UPDATE the image
-# RUN rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-# RUN yum -y install yum-utils gcc openssl-devel bzip2-devel libffi-devel wget bash cloud-init procps lsof
-# RUN yum -y groupinstall development
-# RUN yum -y install https://centos7.iuscommunity.org/ius-release.rpm
-# RUN yum -y install systemd-sysv systemd; yum clean all
+RUN rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+RUN yum -y install yum-utils gcc openssl-devel bzip2-devel libffi-devel wget bash cloud-init procps lsof
+RUN yum -y groupinstall development
+RUN yum -y install https://centos7.iuscommunity.org/ius-release.rpm
+RUN yum -y install systemd-sysv systemd; yum clean all
 
 ##############INSTALL python 3.x
 # WORKDIR /usr/src
