@@ -41,12 +41,12 @@ WORKDIR /app
 # RUN chmod 755 /app/src/scripts/importFile.sh
 RUN npm install
 ###############INSTALL mongodb
-RUN mv mongodb-org-4.0.repo /etc/yum.repos.d/
-RUN yum install -y mongodb-org-shell-4.0.7 mongodb-org-tools-4.0.7
+# RUN mv mongodb-org-4.0.repo /etc/yum.repos.d/
+# RUN yum install -y mongodb-org-shell-4.0.7 mongodb-org-tools-4.0.7
 
 ############### Environment variables
-ENV TZ=UTC
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+# ENV TZ=UTC
+# RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 ############### VERIFY variables
 RUN mongo --version
